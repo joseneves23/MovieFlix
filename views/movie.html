@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Detalhes do Filme</title>
+  <link rel="stylesheet" href="public/style.css">
+</head>
+<body>
+  <header>
+    <a href="index.html">Voltar</a>
+  </header>
+
+  <main>
+    <div id="movie-details" class="movie-details"></div>
+  </main>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const movieId = urlParams.get('id');
+
+    fetch(`/api/movie?id=${movieId}`)
+      .then(res => res.json())
+      .then(movie => {
+        const container = document.getElementById('movie-details');
+        container.innerHTML = `
+          <div class="movie-detail-card">
+            <img src="${movie.poster || 'public/images/no-image.png'}" 
+                 onerror="this.onerror=null; this.src='public/images/no-image.png';" 
+                 alt="${movie.title}" />
+
+            <div class="movie-info">
+              <h1>${movie.title}</h1>
+              <p><strong>Ano:</strong> ${movie.year || '-'}</p>
+              <p><strong>Duração:</strong> ${movie.runtime || '-'} min</p>
+              <p><strong>Diretor:</strong> ${movie.directors?.join(', ') || '-'}</p>
+              <p><strong>Gêneros:</strong> ${movie.genres?.join(', ') || '-'}</p>
+              <p><strong>Sinopse:</strong> ${movie.fullplot || '-'}</p>
+            </div>
+          </div>
+        `;
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <title>Catálogo de Filmes</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <h1><a href="">Catálogo de Filmes</a></h1>
+    <div class="search-container">
+      <input id="search" placeholder="Buscar por título..." />
+    </div>
+  </header>
+
+  <main>
+    <div id="movies" class="movies-container"></div>
+
+    <div class="pagination">
+      <button id="prev">Anterior</button>
+      <button id="next">Próxima</button>
+    </div>
+  </main>
+
+  <script>
+    let page = 1;
+  
+    const fetchMovies = async () => {
+      const search = document.getElementById('search').value;
+      const res = await fetch(`/api/movies?page=${page}&search=${search}`);
+      const movies = await res.json();
+  
+      const container = document.getElementById('movies');
+      container.innerHTML = '';
+  
+      movies.forEach(movie => {
+        const div = document.createElement('div');
+        div.className = 'movie-card';
+        div.innerHTML = `
+          <a href="movie.html?id=${movie._id}">
+<img src="${movie.poster || '/images/no-image.png'}" onerror="this.onerror=null; this.src='/images/no-image.png';" alt="${movie.title}" />            <div class="info">
+              <h3>${movie.title}</h3>
+              <p>${movie.year || '-'}</p>
+            </div>
+          </a>
+        `;
+        container.appendChild(div);
+      });
+  
+      // Atualiza a visibilidade dos botões
+      const prevButton = document.getElementById('prev');
+      const nextButton = document.getElementById('next');
+  
+      prevButton.style.display = page === 1 ? 'none' : 'inline-block';
+      nextButton.style.display = movies.length === 0 ? 'none' : 'inline-block';
+    };
+  
+    document.getElementById('search').addEventListener('input', () => {
+      page = 1;
+      fetchMovies();
+    });
+  
+    document.getElementById('prev').addEventListener('click', () => {
+      if (page > 1) {
+        page--;
+        fetchMovies();
+      }
+    });
+  
+    document.getElementById('next').addEventListener('click', () => {
+      page++;
+      fetchMovies();
+    });
+  
+    fetchMovies();
+  </script>
+</body>
+</html>

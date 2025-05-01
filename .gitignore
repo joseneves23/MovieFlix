@@ -1,0 +1,15 @@
+# Node.js
+node_modules/
+.env
+
+# Vercel build
+.vercel/
+output/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# MacOS
+.DS_Store
