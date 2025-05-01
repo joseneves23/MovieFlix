@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>Detalhes do Filme</title>
-  <link rel="stylesheet" href="public/style.css">
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
   <header>
-    <a href="index.html">Voltar</a>
+    <a href="/">Voltar</a>
   </header>
 
   <main>
@@ -24,8 +24,8 @@
         const container = document.getElementById('movie-details');
         container.innerHTML = `
           <div class="movie-detail-card">
-            <img src="${movie.poster || 'public/images/no-image.png'}" 
-                 onerror="this.onerror=null; this.src='public/images/no-image.png';" 
+            <img src="${movie.poster || '/images/no-image.png'}" 
+                 onerror="this.onerror=null; this.src='/images/no-image.png';" 
                  alt="${movie.title}" />
 
             <div class="movie-info">

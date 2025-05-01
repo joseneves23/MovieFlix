@@ -7,7 +7,7 @@
 </head>
 <body>
   <header>
-    <h1><a href="">Catálogo de Filmes</a></h1>
+    <h1><a href="/">Catálogo de Filmes</a></h1>
     <div class="search-container">
       <input id="search" placeholder="Buscar por título..." />
     </div>
@@ -37,8 +37,11 @@
         const div = document.createElement('div');
         div.className = 'movie-card';
         div.innerHTML = `
-          <a href="movie.html?id=${movie._id}">
-<img src="${movie.poster || '/images/no-image.png'}" onerror="this.onerror=null; this.src='/images/no-image.png';" alt="${movie.title}" />            <div class="info">
+          <a href="/movie?id=${movie._id}">
+            <img src="${movie.poster || '/images/no-image.png'}" 
+                 onerror="this.onerror=null; this.src='/images/no-image.png';" 
+                 alt="${movie.title}" />
+            <div class="info">
               <h3>${movie.title}</h3>
               <p>${movie.year || '-'}</p>
             </div>
@@ -47,7 +50,6 @@
         container.appendChild(div);
       });
   
-      // Atualiza a visibilidade dos botões
       const prevButton = document.getElementById('prev');
       const nextButton = document.getElementById('next');
   
