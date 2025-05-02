@@ -16,6 +16,16 @@
       <h2>Comentários</h2>
       <ul id="comments-list"></ul>
     </div>
+    <!-- ...existing code... -->
+
+    <div id="add-comment-section" class="add-comment-section">
+      <h3>Adicionar Comentário</h3>
+      <form id="add-comment-form">
+        <input type="text" id="comment-name" placeholder="Nome de Utilizador" required />
+        <textarea id="comment-text" placeholder="Escreva o seu comentário" required></textarea>
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
   </main>
 
   <script>
@@ -50,21 +60,119 @@
         const commentsList = document.getElementById('comments-list');
         if (comments.length > 0) {
           comments.forEach(comment => {
-            const li = document.createElement('li');
-            li.classList.add('comment-card');
-            li.innerHTML = `
-              <div class="comment-header">
-                <strong>${comment.name}</strong>
-                <span>${new Date(comment.date).toLocaleString()}</span>
-              </div>
-              <p class="comment-text">${comment.text}</p>
-            `;
-            commentsList.appendChild(li);
-          });
+          const li = document.createElement('li');
+          li.classList.add('comment-card');
+          li.innerHTML = `
+            <div class="comment-header">
+              <strong>${comment.name}</strong>
+              <span>${new Date(comment.date).toLocaleString()}</span>
+            </div>
+            <p class="comment-text">${comment.text}</p>
+            <div class="comment-actions">
+              <button class="edit-comment" data-id="${comment._id}">Editar</button>
+              <button class="delete-comment" data-id="${comment._id}">Remover</button>
+            </div>
+          `;
+          commentsList.appendChild(li);
+        });
         } else {
           commentsList.innerHTML = '<p class="no-comments">Sem comentários disponíveis.</p>';
         }
       });
+  
+    // Adicionar novo comentário
+    const addCommentForm = document.getElementById('add-comment-form');
+    addCommentForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('comment-name').value;
+      const text = document.getElementById('comment-text').value;
+
+      if (name && text) {
+        fetch(`/api/movie?id=${movieId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name, text }),
+        })
+          .then(res => res.json())
+          .then(response => {
+            if (response.message) {
+              const commentsList = document.getElementById('comments-list');
+              const li = document.createElement('li');
+              li.classList.add('comment-card');
+              li.innerHTML = `
+                <div class="comment-header">
+                  <strong>${name}</strong>
+                  <span>${new Date().toLocaleString()}</span>
+                </div>
+                <p class="comment-text">${text}</p>
+                <div class="comment-actions">
+                  <button class="edit-comment" data-id="${response.commentId}">Editar</button>
+                  <button class="delete-comment" data-id="${response.commentId}">Remover</button>
+                </div>
+              `;
+              commentsList.appendChild(li);
+
+              addCommentForm.reset();
+            } else {
+              alert('Erro ao adicionar comentário');
+            }
+          })
+          .catch(err => console.error('Erro:', err));
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('edit-comment')) {
+      const commentId = e.target.dataset.id;
+      const commentCard = e.target.closest('.comment-card');
+      const name = prompt('Edite o nome:', commentCard.querySelector('strong').textContent);
+      const text = prompt('Edite o comentário:', commentCard.querySelector('.comment-text').textContent);
+
+      if (name && text) {
+        fetch(`/api/movie`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ commentId, name, text }),
+        })
+          .then(res => res.json())
+          .then(response => {
+            if (response.message) {
+              commentCard.querySelector('strong').textContent = name;
+              commentCard.querySelector('.comment-text').textContent = text;
+            } else {
+              alert('Erro ao editar comentário');
+            }
+          })
+          .catch(err => console.error('Erro:', err));
+      }
+    }
+  });
+
+    document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('delete-comment')) {
+      const commentId = e.target.dataset.id;
+
+      if (confirm('Tem certeza de que deseja remover este comentário?')) {
+        fetch(`/api/movie?commentId=${commentId}`, {
+          method: 'DELETE',
+        })
+          .then(res => res.json())
+          .then(response => {
+            if (response.message) {
+              e.target.closest('.comment-card').remove();
+            } else {
+              alert('Erro ao remover comentário');
+            }
+          })
+          .catch(err => console.error('Erro:', err));
+      }
+    }
+  });
   </script>
 </body>
 </html>

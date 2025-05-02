@@ -63,15 +63,17 @@
     });
   
     document.getElementById('prev').addEventListener('click', () => {
-      if (page > 1) {
-        page--;
-        fetchMovies();
-      }
-    });
-  
+    if (page > 1) {
+      page--;
+      fetchMovies();
+      window.scrollTo({ top: 0, behavior: 'smooth' }); // Adiciona scroll ao topo
+    }
+  });
+
     document.getElementById('next').addEventListener('click', () => {
       page++;
       fetchMovies();
+      window.scrollTo({ top: 0, behavior: 'smooth' }); // Adiciona scroll ao topo
     });
   
     fetchMovies();

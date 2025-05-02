@@ -257,3 +257,83 @@ a:hover {
   text-align: center;
   margin-top: 1rem;
 }
+
+.add-comment-section {
+  margin-top: 2rem;
+  padding: 1rem;
+  border-top: 1px solid #ddd;
+}
+
+.add-comment-section h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+#add-comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+#add-comment-form input,
+#add-comment-form textarea {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+#add-comment-form textarea {
+  resize: none;
+  height: 100px;
+}
+
+#add-comment-form button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.8rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#add-comment-form button:hover {
+  background-color: #0056b3;
+}
+
+
+.comment-actions {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.comment-actions button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.comment-actions .edit-comment {
+  background-color: #ffc107;
+  color: #fff;
+}
+
+.comment-actions .edit-comment:hover {
+  background-color: #e0a800;
+}
+
+.comment-actions .delete-comment {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.comment-actions .delete-comment:hover {
+  background-color: #c82333;
+}

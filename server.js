@@ -7,6 +7,8 @@ const movieRoute = require('./api/movie');
 const app = express();
 const port = 3001;
 
+app.use(express.json());
+
 // Servir arquivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
