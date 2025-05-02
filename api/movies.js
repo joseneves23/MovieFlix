@@ -19,6 +19,7 @@ module.exports = async (req, res) => {
 
     const cursor = movies
       .find(query)
+      .sort({ year: 1 })
       .skip((page - 1) * limit)
       .limit(Number(limit));
 

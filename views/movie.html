@@ -12,22 +12,29 @@
 
   <main>
     <div id="movie-details" class="movie-details"></div>
+    <div id="comments-section" class="comments-section">
+      <h2>Comentários</h2>
+      <ul id="comments-list"></ul>
+    </div>
   </main>
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const movieId = urlParams.get('id');
-
+  
     fetch(`/api/movie?id=${movieId}`)
       .then(res => res.json())
-      .then(movie => {
+      .then(data => {
+        const { movie, comments } = data;
+  
+        // Exibir detalhes do filme
         const container = document.getElementById('movie-details');
         container.innerHTML = `
           <div class="movie-detail-card">
             <img src="${movie.poster || '/images/no-image.png'}" 
                  onerror="this.onerror=null; this.src='/images/no-image.png';" 
                  alt="${movie.title}" />
-
+  
             <div class="movie-info">
               <h1>${movie.title}</h1>
               <p><strong>Ano:</strong> ${movie.year || '-'}</p>
@@ -38,6 +45,25 @@
             </div>
           </div>
         `;
+  
+        // Exibir comentários
+        const commentsList = document.getElementById('comments-list');
+        if (comments.length > 0) {
+          comments.forEach(comment => {
+            const li = document.createElement('li');
+            li.classList.add('comment-card');
+            li.innerHTML = `
+              <div class="comment-header">
+                <strong>${comment.name}</strong>
+                <span>${new Date(comment.date).toLocaleString()}</span>
+              </div>
+              <p class="comment-text">${comment.text}</p>
+            `;
+            commentsList.appendChild(li);
+          });
+        } else {
+          commentsList.innerHTML = '<p class="no-comments">Sem comentários disponíveis.</p>';
+        }
       });
   </script>
 </body>

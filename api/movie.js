@@ -17,9 +17,12 @@ module.exports = async (req, res) => {
 
     if (!movie) return res.status(404).json({ error: 'Filme não encontrado' });
 
-    res.status(200).json(movie);
+    // Buscar comentários relacionados ao filme
+    const comments = await db.collection('comments').find({ movie_id: new ObjectId(id) }).toArray();
+
+    res.status(200).json({ movie, comments });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Erro ao buscar filme' });
+    res.status(500).json({ error: 'Erro ao buscar filme e comentários' });
   }
 };
