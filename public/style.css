@@ -100,28 +100,52 @@ header h1 a {
 .pagination {
   text-align: center;
   margin: 2rem 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .pagination button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 0.6rem 1.5rem;
-  margin: 0 0.5rem;
-  font-size: 1rem;
-  border-radius: 25px;
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+  padding: 0.5rem 0.8rem;
+  min-width: 2.5rem;
+  font-size: 0.9rem;
+  border-radius: 4px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .pagination button:hover {
-  background-color: #0056b3;
+  background-color: #e0e0e0;
+  border-color: #ccc;
+}
+
+.pagination button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #0056b3;
+  font-weight: bold;
+}
+
+.pagination button.page-nav {
+  background-color: #f8f9fa;
+  color: #007bff;
+  font-weight: bold;
 }
 
 .pagination button:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.4);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
+
+.ellipsis {
+  padding: 0.5em;
+  color: #999;
+}
+
 
 /* Movie details page */
 .movie-details {

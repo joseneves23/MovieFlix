@@ -16,18 +16,19 @@
   <main>
     <div id="movies" class="movies-container"></div>
 
-    <div class="pagination">
-      <button id="prev">Anterior</button>
-      <button id="next">Próxima</button>
+    <div class="pagination" id="pagination">
+      <!-- Os botões de paginação serão gerados dinamicamente aqui -->
     </div>
   </main>
 
   <script>
-    let page = 1;
-  
+    let currentPage = 1;
+    let itemsPerPage = 12;
+    let hasMorePages = true;
+    
     const fetchMovies = async () => {
       const search = document.getElementById('search').value;
-      const res = await fetch(`/api/movies?page=${page}&search=${search}`);
+      const res = await fetch(`/api/movies?page=${currentPage}&limit=${itemsPerPage}&search=${search}`);
       const movies = await res.json();
   
       const container = document.getElementById('movies');
@@ -49,33 +50,97 @@
         `;
         container.appendChild(div);
       });
-  
-      const prevButton = document.getElementById('prev');
-      const nextButton = document.getElementById('next');
-  
-      prevButton.style.display = page === 1 ? 'none' : 'inline-block';
-      nextButton.style.display = movies.length === 0 ? 'none' : 'inline-block';
+      
+      // Verificar se temos mais páginas com base no número de resultados
+      hasMorePages = movies.length === itemsPerPage;
+      
+      // Se não houver filmes e não estamos na primeira página, voltar para a página anterior
+      if (movies.length === 0 && currentPage > 1) {
+        currentPage--;
+        fetchMovies();
+      } else {
+        renderPagination();
+      }
     };
-  
-    document.getElementById('search').addEventListener('input', () => {
-      page = 1;
-      fetchMovies();
-    });
-  
-    document.getElementById('prev').addEventListener('click', () => {
-    if (page > 1) {
-      page--;
-      fetchMovies();
-      window.scrollTo({ top: 0, behavior: 'smooth' }); // Adiciona scroll ao topo
-    }
-  });
+    
+    const renderPagination = () => {
+    const paginationContainer = document.getElementById('pagination');
+    paginationContainer.innerHTML = '';
 
-    document.getElementById('next').addEventListener('click', () => {
-      page++;
+    const maxVisiblePages = 5;
+    const totalPages = hasMorePages ? currentPage + 1 : currentPage;
+    const lastPage = 1779;
+
+    const createEllipsis = () => {
+      const span = document.createElement('span');
+      span.textContent = '...';
+      span.classList.add('ellipsis');
+      paginationContainer.appendChild(span);
+    };
+
+    if (currentPage > 1) {
+      addPageButton(paginationContainer, currentPage - 1, '«', 'page-nav');
+    }
+
+    // Always show first page
+    addPageButton(paginationContainer, 1);
+
+    if (currentPage > 3) {
+      createEllipsis();
+    }
+
+    // Show middle pages around current
+    const start = Math.max(2, currentPage - 1);
+    const end = Math.min(totalPages - 1, currentPage + 1);
+
+    for (let i = start; i <= end; i++) {
+      addPageButton(paginationContainer, i);
+    }
+
+    if (currentPage + 2 < totalPages) {
+      createEllipsis();
+    }
+
+    // Always show last page
+    if (totalPages > 1) {
+      addPageButton(paginationContainer, totalPages);
+    }
+    
+
+    if (hasMorePages) {
+      addPageButton(paginationContainer, currentPage + 1, '»', 'page-nav');
+    }
+  };
+    
+    const addPageButton = (container, pageNum, label, className) => {
+      const button = document.createElement('button');
+      button.textContent = label || pageNum;
+      button.dataset.page = pageNum;
+      
+      if (className) {
+        button.classList.add(className);
+      }
+      
+      // Destacar a página atual
+      if (pageNum === currentPage) {
+        button.classList.add('active');
+      }
+      
+      button.addEventListener('click', () => {
+        currentPage = parseInt(pageNum);
+        fetchMovies();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      
+      container.appendChild(button);
+    };
+    
+    // Iniciar com a primeira página
+    document.getElementById('search').addEventListener('input', () => {
+      currentPage = 1;
       fetchMovies();
-      window.scrollTo({ top: 0, behavior: 'smooth' }); // Adiciona scroll ao topo
     });
-  
+    
     fetchMovies();
   </script>
 </body>
