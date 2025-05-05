@@ -1,5 +1,4 @@
 // api/movie.js
-
 const { MongoClient, ObjectId } = require('mongodb');
 require('dotenv').config();
 
@@ -14,12 +13,11 @@ module.exports = async (req, res) => {
     const db = client.db('sample_mflix');
 
     if (req.method === 'GET') {
-      // Buscar detalhes do filme e comentários
-      const movie = await db.collection('movies').findOne({ _id: new ObjectId(id) });
+      const movie = await db.collection('movies').findOne({ _id: new ObjectId(String(id)) });
 
       if (!movie) return res.status(404).json({ error: 'Filme não encontrado' });
 
-      const comments = await db.collection('comments').find({ movie_id: new ObjectId(id) }).toArray();
+      const comments = await db.collection('comments').find({ movie_id: new ObjectId(String(id)) }).toArray();
       return res.status(200).json({ movie, comments });
     }
 
@@ -31,7 +29,7 @@ module.exports = async (req, res) => {
       }
     
       const newComment = {
-        movie_id: new ObjectId(id),
+        movie_id: new ObjectId(String(id)),
         name,
         text,
         date: new Date(),
@@ -40,7 +38,7 @@ module.exports = async (req, res) => {
       const result = await db.collection('comments').insertOne(newComment);
       return res.status(201).json({ 
         message: 'Comentário adicionado com sucesso', 
-        commentId: result.insertedId // Retorna o ID do comentário
+        commentId: result.insertedId
       });
     }
 
@@ -53,7 +51,7 @@ module.exports = async (req, res) => {
         }
       
         const result = await db.collection('comments').updateOne(
-          { _id: new ObjectId(commentId) },
+          { _id: new ObjectId(String(commentId)) },
           { $set: { name, text, date: new Date() } }
         );
       
@@ -76,7 +74,7 @@ module.exports = async (req, res) => {
       }
     
       try {
-        const result = await db.collection('comments').deleteOne({ _id: new ObjectId(commentId) });
+        const result = await db.collection('comments').deleteOne({ _id: new ObjectId(String(commentId)) });
     
         if (result.deletedCount === 0) {
           return res.status(404).json({ error: 'Comentário não encontrado' });
